@@ -1,0 +1,27 @@
+{
+    "name": "react-native-crispy-invention",
+    "version": "1.0.0",
+    "description": "this is designed for crispy tools",
+    "homepage": "https://github.com/shirleysteven/react-native-crispy-invention",
+    "main": "index.js",
+    "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [
+      "react-native-crispy-invention"
+    ],
+    "author": {
+      "name": "crispy",
+      "email": "crispy@example.com"
+    },
+    "license": "MIT",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/shirleysteven/react-native-crispy-invention.git"
+    },
+    "peerDependencies": {
+      "react": "*",
+      "react-native": "*"
+    }
+  }
+  
