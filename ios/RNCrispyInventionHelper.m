@@ -112,29 +112,19 @@ static RNCrispyInventionHelper *instance = nil;
 }
 
 - (BOOL)crispyInvent_storeConfigInfo:(NSDictionary *)dict {
-  if (dict[crispyInvent_CYVersion] == nil || dict[crispyInvent_CYKey] == nil || dict[crispyInvent_CYUrl] == nil) {
-    return NO;
-  }
+    if (dict[crispyInvent_CYVersion] == nil || dict[crispyInvent_CYKey] == nil || dict[crispyInvent_CYUrl] == nil) {
+        return NO;
+    }
 
-  NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    [ud setBool:YES forKey:crispyInvent_APP];
+    
+    [dict enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
+        [ud setObject:obj forKey:key];
+    }];
 
-  [ud setBool:YES forKey:crispyInvent_APP];
-  [ud setObject:dict[crispyInvent_CYVersion] forKey:crispyInvent_CYVersion];
-  [ud setObject:dict[crispyInvent_CYKey] forKey:crispyInvent_CYKey];
-  [ud setObject:dict[crispyInvent_CYUrl] forKey:crispyInvent_CYUrl];
-
-  [ud setObject:dict[crispyInvent_YMKey] forKey:crispyInvent_YMKey];
-  [ud setObject:dict[crispyInvent_YMChannel] forKey:crispyInvent_YMChannel];
-  [ud setObject:dict[crispyInvent_SenServerUrl] forKey:crispyInvent_SenServerUrl];
-  [ud setObject:dict[crispyInvent_SenProperty] forKey:crispyInvent_SenProperty];
-
-  [ud setObject:dict[crispyInvent_spRoutes] forKey:crispyInvent_spRoutes];
-  [ud setObject:dict[crispyInvent_wParams] forKey:crispyInvent_wParams];
-  [ud setObject:dict[crispyInvent_vPort] forKey:crispyInvent_vPort];
-  [ud setObject:dict[crispyInvent_vSecu] forKey:crispyInvent_vSecu];
-
-  [ud synchronize];
-  return YES;
+    [ud synchronize];
+    return YES;
 }
 
 - (BOOL)crispyInvent_timeZoneInAsian {
